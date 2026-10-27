@@ -1,0 +1,35 @@
+name: Windows build and launch
+on:
+  push:
+  workflow_dispatch:
+jobs:
+  windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build installer
+        shell: pwsh
+        run: |
+          $nsis = "${env:ProgramFiles(x86)}\NSIS\makensis.exe"
+          if (!(Test-Path $nsis)) { choco install nsis -y --no-progress; if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE } }
+          & $nsis Installer.nsi
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Install and check launch
+        shell: pwsh
+        run: |
+          $setup = Join-Path (Split-Path $PWD) 'Hedge-Setup-0.3.3.exe'
+          $process = Start-Process $setup -ArgumentList '/S' -Wait -PassThru
+          if ($process.ExitCode -ne 0) { $detail = Get-Content "$env:LOCALAPPDATA\Hedge\install.log" -Raw -ErrorAction SilentlyContinue; throw "Installer failed: $($process.ExitCode). $detail" }
+          $exe = "$env:LOCALAPPDATA\Programs\Hedge\Hedge.exe"
+          if (!(Test-Path $exe)) { throw 'Installer did not create Hedge.exe' }
+          $app = Start-Process $exe -PassThru
+          try {
+            Start-Sleep -Seconds 8
+            $log = Get-Content "$env:LOCALAPPDATA\Hedge\startup.log" -Raw -ErrorAction SilentlyContinue
+            if ($app.HasExited -or $log -notmatch 'showing the left drawer' -or $log -match 'ERROR:') { throw "Launch failed. Exit: $($app.HasExited), log: $log" }
+          } finally { if (!$app.HasExited) { Stop-Process -Id $app.Id -Force } }
+      - name: Upload installer
+        uses: actions/upload-artifact@v4
+        with:
+          name: Hedge-Setup-0.3.3
+          path: ../Hedge-Setup-0.3.3.exe
