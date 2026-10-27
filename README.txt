@@ -1,7 +1,7 @@
-Hedge 0.4.9
+Hedge 0.4.10
 
 START
-Run Hedge-Setup-0.4.9.exe. The installer installs for your Windows user,
+Run Hedge-Setup-0.4.10.exe. The installer installs for your Windows user,
 creates Start menu and desktop shortcuts, and offers to start Hedge.
 Windows 11 normally includes the required .NET Framework and its compiler.
 The installer builds Hedge using your Windows framework during setup.
