@@ -1,14 +1,14 @@
-Hedge 0.4.0
+Hedge 0.4.1
 
 START
-Run Hedge-Setup-0.4.0.exe. The installer installs for your Windows user,
+Run Hedge-Setup-0.4.1.exe. The installer installs for your Windows user,
 creates Start menu and desktop shortcuts, and offers to start Hedge.
 Windows 11 normally includes the required .NET Framework and its compiler.
 The installer builds Hedge using your Windows framework during setup.
 No separate SDK download or administrator rights are required. The app is unsigned; Windows may show a
 publisher warning. Source code is installed in the Source folder.
 
-The left drawer opens when Hedge starts. Look for the narrow blue strip halfway
+The left drawer opens when Hedge starts. Look for the narrow edge strip halfway
 down each screen edge after collapsing a drawer. Hover or click
 to reveal the drawer. The tray icon has Settings and Exit. Use Pin to keep a
 drawer open. 1 / 2 views switches between one and two views per drawer. Each
@@ -70,3 +70,8 @@ is already running, a message explains how to find it.
 
 Previous EdgeFiles settings are read on first run when Hedge settings do not exist.
 The two versions can be uninstalled separately.
+
+TAB OVERFLOW
+When tabs exceed the available space, use the small arrows at either end of
+the tab strip. Click the x on a tab to close it. The collapsed hotspot is a
+narrow, subdued strip at the screen edge.

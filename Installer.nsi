@@ -1,7 +1,7 @@
 Unicode true
 !include "MUI2.nsh"
-Name "Hedge 0.4.0"
-OutFile "../Hedge-Setup-0.4.0.exe"
+Name "Hedge 0.4.1"
+OutFile "../Hedge-Setup-0.4.1.exe"
 InstallDir "$LOCALAPPDATA\Programs\Hedge"
 RequestExecutionLevel user
 SetCompressor /SOLID lzma
@@ -80,7 +80,7 @@ Section "Install"
  CreateShortcut "$SMPROGRAMS\Hedge\Uninstall Hedge.lnk" "$INSTDIR\Uninstall.exe"
  CreateShortcut "$DESKTOP\Hedge.lnk" "$INSTDIR\Hedge.exe"
  WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\Hedge" "DisplayName" "Hedge"
- WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\Hedge" "DisplayVersion" "0.4.0"
+ WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\Hedge" "DisplayVersion" "0.4.1"
  WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\Hedge" "UninstallString" '"$INSTDIR\Uninstall.exe"'
  WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\Hedge" "DisplayIcon" "$INSTDIR\Hedge.exe"
  WriteRegDWORD HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\Hedge" "NoModify" 1
