@@ -1,7 +1,7 @@
-Hedge 0.4.2
+Hedge 0.4.3
 
 START
-Run Hedge-Setup-0.4.2.exe. The installer installs for your Windows user,
+Run Hedge-Setup-0.4.3.exe. The installer installs for your Windows user,
 creates Start menu and desktop shortcuts, and offers to start Hedge.
 Windows 11 normally includes the required .NET Framework and its compiler.
 The installer builds Hedge using your Windows framework during setup.
@@ -75,3 +75,6 @@ TAB OVERFLOW
 When tabs exceed the available space, use the small arrows at either end of
 the tab strip. Click the x on a tab to close it. The collapsed hotspot is a
 narrow, subdued strip at the screen edge.
+
+APPEARANCE
+Choose green or gray folder and shortcut icons in Settings.
