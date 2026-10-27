@@ -4,7 +4,7 @@ Hedge is a Windows 11 file browser with drawers on the left and right screen edg
 
 ## Install
 
-Run `Hedge-Setup-0.4.12.exe`. Setup compiles the app using the .NET Framework installed with Windows. It creates Start menu and desktop shortcuts and offers to launch Hedge. An installation failure is shown and recorded in `%LOCALAPPDATA%\Hedge\install.log`. Runtime errors are recorded in `%LOCALAPPDATA%\Hedge\startup.log`.
+Run `Hedge-Setup-0.4.13.exe`. Setup compiles the app using the .NET Framework installed with Windows. It creates Start menu and desktop shortcuts and offers to launch Hedge. An installation failure is shown and recorded in `%LOCALAPPDATA%\Hedge\install.log`. Runtime errors are recorded in `%LOCALAPPDATA%\Hedge\startup.log`.
 
 ## Build
 
