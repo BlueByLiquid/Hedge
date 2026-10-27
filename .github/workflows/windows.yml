@@ -28,8 +28,13 @@ jobs:
             $log = Get-Content "$env:LOCALAPPDATA\Hedge\startup.log" -Raw -ErrorAction SilentlyContinue
             if ($app.HasExited -or $log -notmatch 'showing the left drawer' -or $log -match 'ERROR:') { throw "Launch failed. Exit: $($app.HasExited), log: $log" }
           } finally { if (!$app.HasExited) { Stop-Process -Id $app.Id -Force } }
+      - name: Stage installer artifact
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force dist | Out-Null
+          Copy-Item (Join-Path (Split-Path $PWD) "Hedge-Setup-0.3.3.exe") dist/
       - name: Upload installer
         uses: actions/upload-artifact@v4
         with:
           name: Hedge-Setup-0.3.3
-          path: ../Hedge-Setup-0.3.3.exe
+          path: dist/Hedge-Setup-0.3.3.exe
