@@ -97,7 +97,7 @@ namespace Hedge {
    Button add=Program.Icon("+",()=>Add(current==null?Environment.GetFolderPath(Environment.SpecialFolder.UserProfile):current.PathNow),"New tab");Button drive=Program.Icon("▣",()=>ToggleDrives(),"Drives");Button home=Program.Icon("⌂",()=>{if(current!=null)current.Navigate(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile));},"Home");Button places=Program.Icon("☰",()=>{if(current!=null)current.TogglePlaces();},"Toggle shortcuts");actions.Controls.Add(add);actions.Controls.Add(home);actions.Controls.Add(drive);actions.Controls.Add(places);
    tabStrip=new FlowLayoutPanel{Dock=DockStyle.Fill,WrapContents=false,AutoScroll=true,BackColor=bar.BackColor,Padding=new Padding(2,1,0,0)};bar.Controls.Add(tabStrip);bar.Controls.Add(actions);
    drives=Program.DarkMenu();
-   drives.Opening+=(ss,ee)=>{drives.Items.Clear();foreach(var d in DriveInfo.GetDrives()){string path=d.Name;drives.Items.Add(DriveLabel(d),null,(s2,e2)=>{if(current!=null)current.Navigate(path);});}};
+   drives.Opening+=(ss,ee)=>{drives.Items.Clear();foreach(var d in DriveInfo.GetDrives()){string path=d.Name;drives.Items.Add(DriveLabel(d),null,(s2,e2)=>{if(current!=null)current.Navigate(path);});}ee.Cancel=drives.Items.Count==0;};
    content=new Panel{Dock=DockStyle.Fill,BackColor=Color.FromArgb(27,29,34)};Controls.Add(content);Controls.Add(bar);
    if(paths==null||paths.Count==0)Add(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile));else foreach(var path in paths)Add(Directory.Exists(path)?path:Environment.GetFolderPath(Environment.SpecialFolder.UserProfile));
   }
