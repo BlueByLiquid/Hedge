@@ -1,7 +1,7 @@
-Hedge 0.3.3
+Hedge 0.4.0
 
 START
-Run Hedge-Setup-0.3.3.exe. The installer installs for your Windows user,
+Run Hedge-Setup-0.4.0.exe. The installer installs for your Windows user,
 creates Start menu and desktop shortcuts, and offers to start Hedge.
 Windows 11 normally includes the required .NET Framework and its compiler.
 The installer builds Hedge using your Windows framework during setup.
@@ -14,24 +14,24 @@ to reveal the drawer. The tray icon has Settings and Exit. Use Pin to keep a
 drawer open. 1 / 2 views switches between one and two views per drawer. Each
 view has tabs. Stack / side changes how the two views are arranged.
 
-PLACES
-The Places pane contains Home, Desktop, Downloads, Documents, Pictures, Music,
-Videos, OneDrive when available, and accessible drives. The Places button hides
-or shows it. Press + above the list to pin the current folder. Right-click a
-pinned entry to remove it. These are Hedge pins, not Explorer's pins.
-Folder paths are resolved for your Windows account, including redirected known
-folders. Pinned paths and tab locations are saved when you exit the tray app.
+SHORTCUTS AND TABS
+The shortcut pane contains Home, Desktop, Downloads, Documents, OneDrive if
+available, pinned folders, and your drives. Hedge identifies Google Drive from
+its volume or network label, or a running Google Drive app for drive Z:.
+Right-click a folder and choose Pin folder. Right-click a shortcut to remove a
+pin. The + icon opens a tab; its x closes it. The small icons at the right open
+Home, Drives, or show and hide shortcuts. A tab has its own path and search.
 
-DETAILS AND FIT
-The Fit columns button widens the drawer to the working area of the screen and
-sizes columns to the visible details without horizontal scrolling. Click it
-again to restore the normal width and default column sizes. If all full values
-cannot fit on your monitor, columns are proportionally narrowed. Hover over a
-row for its full path. Two side-by-side views have less room than stacked views.
+DRAG THE INNER EDGE
+Drag the inside edge of either drawer to resize it. The left and right widths
+are saved separately on exit. Click a column heading to sort and drag the
+column borders to adjust widths. The compact buttons beside the address bar
+are Back, Forward, Up, and a folder hierarchy menu. Press Enter in the address
+bar to open a typed path.
 
 SEARCH
-Type a filename or partial name in Find. Check Regex to use .NET regular
-expressions; check Include subfolders to search within the folder tree. The
+Type a filename or partial name in Find. Toggle .* to use .NET regular
+expressions; toggle Sub to search within the folder tree. The
 first folder scan runs in the background; search uses its cache after it is
 complete. F5 rebuilds the cache. The Folder column identifies each result's
 location. Search is case-insensitive. Links and junctions are not followed.
