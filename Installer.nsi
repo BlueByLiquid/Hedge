@@ -1,7 +1,7 @@
 Unicode true
 !include "MUI2.nsh"
-Name "Hedge 0.4.1"
-OutFile "../Hedge-Setup-0.4.1.exe"
+Name "Hedge 0.4.2"
+OutFile "../Hedge-Setup-0.4.2.exe"
 InstallDir "$LOCALAPPDATA\Programs\Hedge"
 RequestExecutionLevel user
 SetCompressor /SOLID lzma
@@ -69,6 +69,7 @@ Section "Install"
  Abort
  copy_ok:
  File "README.txt"
+ File "LUCIDE-LICENSE.txt"
  CreateDirectory "$INSTDIR\Source"
  SetOutPath "$INSTDIR\Source"
  File "Hedge.cs"
@@ -80,7 +81,7 @@ Section "Install"
  CreateShortcut "$SMPROGRAMS\Hedge\Uninstall Hedge.lnk" "$INSTDIR\Uninstall.exe"
  CreateShortcut "$DESKTOP\Hedge.lnk" "$INSTDIR\Hedge.exe"
  WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\Hedge" "DisplayName" "Hedge"
- WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\Hedge" "DisplayVersion" "0.4.1"
+ WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\Hedge" "DisplayVersion" "0.4.2"
  WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\Hedge" "UninstallString" '"$INSTDIR\Uninstall.exe"'
  WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\Hedge" "DisplayIcon" "$INSTDIR\Hedge.exe"
  WriteRegDWORD HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\Hedge" "NoModify" 1
@@ -106,6 +107,7 @@ Section "Uninstall"
  RMDir "$INSTDIR\Source"
  Delete "$INSTDIR\Hedge.exe"
  Delete "$INSTDIR\README.txt"
+ Delete "$INSTDIR\LUCIDE-LICENSE.txt"
  Delete "$INSTDIR\Uninstall.exe"
  RMDir "$INSTDIR"
  DeleteRegKey HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\Hedge"
