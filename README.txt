@@ -1,7 +1,7 @@
-Hedge 0.5.0
+Hedge 0.6.0
 
 START
-Run Hedge-Setup-0.5.0.exe. The installer installs for your Windows user,
+Run Hedge-Setup-0.6.0.exe. The installer installs for your Windows user,
 creates Start menu and desktop shortcuts, and offers to start Hedge.
 Windows 11 normally includes the required .NET Framework and its compiler.
 The installer builds Hedge using your Windows framework during setup.
@@ -79,5 +79,6 @@ narrow, subdued strip at the screen edge.
 APPEARANCE
 Choose green or gray folder and shortcut icons in Settings.
 
-TRANSFER MONITOR
-Copy and move open a Hedge transfer window with Windows-estimated progress, current item, destination, elapsed time, completion counts and cancellation. Completed details remain until closed; reopen the window from the tray menu > Transfers. Windows still displays file conflict and permission prompts. Cancellation can leave already completed or partial work. Local completion does not mean cloud sync has finished.
+
+GROUP JOB STRIPS
+Each file group has a Transfers strip at the bottom. Click it to expand or collapse job details. Transfers involving that group appear in its list, including both ends of a drag between groups. Additional jobs queue and run one at a time. Queued jobs can be cancelled. Moves ask for confirmation inside the expanded job panel. Windows still handles replace, permission and provider questions; the panel marks detected Windows dialogs as needing attention and offers Show question. Recent job results remain available for this session.

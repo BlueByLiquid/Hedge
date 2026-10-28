@@ -15,7 +15,11 @@ namespace Hedge {
  public sealed class TransferState {
   public readonly object Gate=new object();
   public readonly string[] Sources;public readonly string Destination;public readonly bool Moving;
+  static int nextId;public readonly int Id=Interlocked.Increment(ref nextId);
+  public string SourceGroup="",DestinationGroup="";public bool Queued,AwaitingMove;public IntPtr OwnerHandle,PromptHandle;public uint WorkerThreadId;public string PromptTitle="";
+  public readonly CancellationTokenSource Cancellation=new CancellationTokenSource();public readonly System.Threading.Tasks.TaskCompletionSource<bool> Confirmation=new System.Threading.Tasks.TaskCompletionSource<bool>();
   public volatile bool CancelRequested;
+  public void RequestCancel(){CancelRequested=true;Cancellation.Cancel();Confirmation.TrySetResult(false);NativeJobPrompt.CancelPending(this);}
   public bool Done,Cancelled,Partial;public uint WorkTotal,WorkDone;public int Completed,Skipped,Failed,ProgressReports,FinishResult,LastItemResult,ItemCallbacks;public bool LastCreated;
   public string Current="Preparing Windows file operation...",Error="";public DateTime Started=DateTime.UtcNow,Ended;
   public TransferState(string[] sources,string destination,bool moving){Sources=(string[])sources.Clone();Destination=destination;Moving=moving;}
@@ -95,6 +99,7 @@ namespace Hedge {
   public static void Execute(TransferState state,IntPtr owner){
    if(Thread.CurrentThread.GetApartmentState()!=ApartmentState.STA)throw new InvalidOperationException("Windows file operations require an STA thread.");
    if(state.CancelRequested)throw new OperationCanceledException();
+   lock(state.Gate){state.WorkerThreadId=NativeJobPrompt.GetCurrentThreadId();}
    IFileOperation operation=null;IShellItem destination=null;var sources=new List<IShellItem>();uint cookie=0;bool advised=false;var sink=new TransferSink(state);
    try{
     operation=(IFileOperation)Activator.CreateInstance(Type.GetTypeFromCLSID(new Guid("3AD05575-8857-4850-9277-11B85BDB8E09")));
@@ -114,32 +119,4 @@ namespace Hedge {
   }
  }
 
- sealed class TransferMonitor:Form {
-  public static TransferMonitor Current;readonly TransferState state;readonly System.Windows.Forms.Timer timer;readonly Label heading,detail,current,count,note;readonly ProgressBar progress;readonly Button cancel;
-  public TransferMonitor(TransferState state){
-   this.state=state;Icon=Icon.ExtractAssociatedIcon(Application.ExecutablePath)??SystemIcons.Application;Text="Hedge transfers";Font=new Font("Segoe UI",10);Size=new Size(680,405);MinimumSize=new Size(540,405);StartPosition=FormStartPosition.CenterScreen;MaximizeBox=false;TopMost=true;ShowInTaskbar=true;
-   var grid=new TableLayoutPanel{Dock=DockStyle.Fill,Padding=new Padding(20),ColumnCount=1,RowCount=9};grid.ColumnStyles.Add(new ColumnStyle(SizeType.Percent,100));
-   int[] heights={34,28,48,48,30,28,30,0,38};foreach(int h in heights)grid.RowStyles.Add(h==0?new RowStyle(SizeType.Percent,100):new RowStyle(SizeType.Absolute,h));
-   heading=new Label{Dock=DockStyle.Fill,Font=new Font(Font.FontFamily,13,FontStyle.Bold)};
-   detail=new Label{Dock=DockStyle.Fill,AutoEllipsis=true};current=new Label{Dock=DockStyle.Fill,AutoEllipsis=true};
-   var location=new Label{Dock=DockStyle.Fill,Text="To: "+state.Destination,AutoEllipsis=true};
-   progress=new ProgressBar{Dock=DockStyle.Fill,Style=ProgressBarStyle.Marquee,MarqueeAnimationSpeed=30,Margin=new Padding(0,5,0,5)};
-   count=new Label{Dock=DockStyle.Fill};note=new Label{Dock=DockStyle.Fill,Text="Windows progress is estimated. Cloud synchronization may continue separately.",Font=new Font(Font.FontFamily,9)};
-   var paths=new TextBox{Dock=DockStyle.Fill,Multiline=true,ReadOnly=true,TabStop=false,ScrollBars=ScrollBars.Vertical,Text="Selected sources:"+Environment.NewLine+String.Join(Environment.NewLine,state.Sources)};
-   var actions=new FlowLayoutPanel{Dock=DockStyle.Fill,FlowDirection=FlowDirection.RightToLeft};cancel=Program.Button("Cancel",()=>{if(state.Done)Close();else{state.CancelRequested=true;UpdateStatus();}});actions.Controls.Add(cancel);actions.Controls.Add(Program.Button("Copy details",()=>Clipboard.SetText(Details())));
-   foreach(Control c in new Control[]{heading,detail,current,location,progress,count,note,paths,actions})grid.Controls.Add(c);Controls.Add(grid);Program.Theme(this);note.ForeColor=Color.FromArgb(174,183,187);
-   var tips=new ToolTip();tips.SetToolTip(location,state.Destination);timer=new System.Windows.Forms.Timer{Interval=200};timer.Tick+=(s,e)=>UpdateStatus();timer.Start();
-   Shown+=(s,e)=>{paths.SelectionLength=0;cancel.Focus();};FormClosing+=(s,e)=>{if(!state.Done){e.Cancel=true;Hide();}};Disposed+=(s,e)=>{timer.Dispose();tips.Dispose();if(Current==this)Current=null;};UpdateStatus();
-  }
-  public static TransferMonitor Open(TransferState state){if(Current!=null&&!Current.IsDisposed){if(!Current.state.Done)throw new InvalidOperationException("A transfer is already running.");Current.Close();}var m=new TransferMonitor(state);Current=m;m.Show();return m;}
-  public static void ShowCurrent(){if(Current!=null&&!Current.IsDisposed){Current.Show();Current.BringToFront();}else MessageBox.Show("No transfer to show yet.","Hedge transfers");}
-  public static void RenderCurrent(string path){if(Current==null||Current.IsDisposed)return;Current.UpdateStatus();using(var b=new Bitmap(Current.Width,Current.Height)){Current.DrawToBitmap(b,new Rectangle(Point.Empty,Current.Size));b.Save(path,System.Drawing.Imaging.ImageFormat.Png);}}
-  string Details(){lock(state.Gate){return heading.Text+Environment.NewLine+"Sources:"+Environment.NewLine+String.Join(Environment.NewLine,state.Sources)+Environment.NewLine+"Destination: "+state.Destination+Environment.NewLine+count.Text+Environment.NewLine+state.Error;}}
-  void UpdateStatus(){if(IsDisposed)return;lock(state.Gate){bool failed=state.Error.Length>0||state.Failed>0;heading.Text=state.Done?(state.Cancelled?"Cancelled, partial work may remain":failed?"Transfer failed":state.Partial?"Finished with skipped or incomplete items":"Transfer completed"):(state.Moving?"Moving":"Copying")+" "+state.Sources.Length+" selected item(s)";
-    detail.Text=state.Done?(failed?state.Error:state.Cancelled?"Completed items were not rolled back.":state.Partial?"Review the destination before retrying.":"Windows finished the operation."):(state.CancelRequested?"Cancellation requested. Waiting for Windows...":"Current item:");
-    current.Text=state.Current;TimeSpan elapsed=(state.Done?state.Ended:DateTime.UtcNow)-state.Started;count.Text=state.Completed+" completed · "+state.Skipped+" skipped · "+state.Failed+" failed · "+((int)elapsed.TotalMinutes)+":"+elapsed.Seconds.ToString("00")+" elapsed";
-    if(state.Done||state.WorkTotal>0){progress.Style=ProgressBarStyle.Continuous;int percent=state.Done&&!state.Cancelled&&!failed&&!state.Partial?100:state.WorkTotal>0?(int)Math.Min(100,100.0*state.WorkDone/state.WorkTotal):0;progress.Value=percent;if(!state.Done)detail.Text=state.CancelRequested?"Cancellation requested. Waiting for Windows...":percent+"% estimated · Current item:";}else progress.Style=ProgressBarStyle.Marquee;
-    cancel.Text=state.Done?"Close":state.CancelRequested?"Cancelling...":"Cancel";cancel.Enabled=state.Done||!state.CancelRequested;if(state.Done&&timer!=null)timer.Stop();
-   }}
- }
 }
