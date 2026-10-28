@@ -130,7 +130,7 @@ namespace Hedge {
     var copyState=new TransferState(new string[]{file},to,false);ShellTransfers.Execute(copyState,IntPtr.Zero);string copy=Path.Combine(to,"sample.txt");
     if(!File.Exists(file)||!File.Exists(copy)||File.ReadAllText(copy)!="hedge-test"||copyState.Completed<1)throw new Exception("Monitored copy or callbacks failed");
     var moveState=new TransferState(new string[]{copy},last,true);ShellTransfers.Execute(moveState,IntPtr.Zero);
-    if(File.Exists(copy)||!File.Exists(Path.Combine(last,"sample.txt"))||moveState.Completed<1)throw new Exception("Monitored move or callbacks failed");
+    if(File.Exists(copy)||!File.Exists(Path.Combine(last,"sample.txt"))||moveState.Completed<1)throw new Exception("Monitored move or callbacks failed: source="+File.Exists(copy)+", destination="+File.Exists(Path.Combine(last,"sample.txt"))+", completed="+moveState.Completed+", skipped="+moveState.Skipped+", failed="+moveState.Failed+", callbacks="+moveState.ItemCallbacks+", hr=0x"+moveState.LastItemResult.ToString("X8")+", created="+moveState.LastCreated);
     string folder=Path.Combine(from,"Nested");Directory.CreateDirectory(folder);File.WriteAllText(Path.Combine(folder,"child.txt"),"nested");ShellTransfers.Execute(new TransferState(new string[]{folder},to,false),IntPtr.Zero);
     if(File.ReadAllText(Path.Combine(to,"Nested","child.txt"))!="nested")throw new Exception("Folder copy failed");
     string cancelDestination=Path.Combine(root,"cancelled");Directory.CreateDirectory(cancelDestination);var cancelled=new TransferState(new string[]{file},cancelDestination,false);cancelled.CancelRequested=true;
