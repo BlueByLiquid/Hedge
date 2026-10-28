@@ -77,7 +77,7 @@ namespace Hedge {
   int Check(){return state.CancelRequested?Abort:0;}
   static string Name(IShellItem item){if(item==null)return "";IntPtr value=IntPtr.Zero;try{if(item.GetDisplayName(0x80058000,out value)>=0&&value!=IntPtr.Zero)return Marshal.PtrToStringUni(value)??"";}catch{}finally{if(value!=IntPtr.Zero)Marshal.FreeCoTaskMem(value);}return "";}
   int Before(IShellItem item){string name=Name(item);lock(state.Gate){if(name.Length>0)state.Current=name;}return Check();}
-  int After(int result,IShellItem created){lock(state.Gate){state.LastItemResult=result;state.LastCreated=created!=null;state.ItemCallbacks++;if(result==0&&created!=null)state.Completed++;else if(result<0){if(result!=Abort&&result!=unchecked((int)0x800704c7)){state.Failed++;state.Error=Marshal.GetExceptionForHR(result).Message;}}else state.Skipped++;}return Check();}
+  int After(int result,IShellItem created){lock(state.Gate){state.LastItemResult=result;state.LastCreated=created!=null;state.ItemCallbacks++;if(result>=0&&created!=null)state.Completed++;else if(result<0){if(result!=Abort&&result!=unchecked((int)0x800704c7)){state.Failed++;state.Error=Marshal.GetExceptionForHR(result).Message;}}else state.Skipped++;}return Check();}
   public int StartOperations(){return Check();}
   public int FinishOperations(int result){lock(state.Gate){state.FinishResult=result;}return 0;}
   public int PreRenameItem(uint f,IShellItem i,string n){return Before(i);}public int PostRenameItem(uint f,IShellItem i,string n,int h,IShellItem c){return After(h,c);}
