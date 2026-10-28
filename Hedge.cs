@@ -165,7 +165,7 @@ namespace Hedge {
   void DisplayChanged(object s,EventArgs e){if(IsHandleCreated&&!IsDisposed)BeginInvoke((Action)Position);}
   public void Position(){var screens=Screen.AllScreens;var screen=screens[Math.Max(0,Math.Min(Program.Config.Monitor,screens.Length-1))];var r=screen.WorkingArea;int w=Math.Min(Math.Max(360,drawerWidth),r.Width);Bounds=new Rectangle(left?r.Left:r.Right-w,r.Top,w,r.Height);int h=Math.Min(Program.Config.SpotHeight,r.Height);int y=r.Top+(int)((r.Height-h)*Program.Config.SpotPercent/100.0);((EdgeStrip)strip).SetEdgeBounds(new Rectangle(left?r.Left:r.Right-4,y,4,h));}
   public void SmokeEdge(){((EdgeStrip)strip).VerifyEdge();}
-  public void PrepareVisual(string path){pinned=true;drawerWidth=720;Position();Reveal();Size=new Size(720,1024);split.Panel2Collapsed=false;split.Orientation=Orientation.Horizontal;split.SplitterDistance=Math.Max(150,(ClientSize.Height-40)/2);a.OpenVisual(path);b.OpenVisual(path);a.VerifyVisual();b.VerifyVisual();}
+  public void PrepareVisual(string path){pinned=true;drawerWidth=720;Position();Reveal();MaximumSize=new Size(720,1024);Size=new Size(720,1024);split.Panel2Collapsed=false;split.Orientation=Orientation.Horizontal;split.SplitterDistance=Math.Max(150,(ClientSize.Height-40)/2);a.OpenVisual(path);b.OpenVisual(path);a.VerifyVisual();b.VerifyVisual();}
   public void PrepareDestination(string path){b.OpenVisual(path);}
   public void StartFixtureDrop(string source){b.InjectFixtureDrop(source);a.RefreshActive();}
   public void VerifyDropVisual(){a.VerifyFixtureRows();b.VerifyFixtureRows();}
@@ -351,7 +351,7 @@ namespace Hedge {
    if(!ValidDestination(sources,destination)){status.Text="Choose a different destination folder.";return;}
    if(move&&MessageBox.Show("Move "+sources.Length+" item(s) to:\n"+destination+"?","Move files",MessageBoxButtons.OKCancel)!=DialogResult.OK)return;
    Program.Busy=true;var state=new TransferState(sources,destination,move);
-   try{var monitor=TransferMonitor.Open(state);IntPtr owner=monitor.Handle;status.Text=move?"Moving...":"Copying...";await RunSta(()=>ShellTransfers.Execute(state,owner));state.End(false,null);}
+   try{var monitor=TransferMonitor.Open(state);IntPtr owner=monitor.Handle;string visualPath=Environment.GetEnvironmentVariable("HEDGE_VISUAL_OUTPUT");if(!String.IsNullOrEmpty(visualPath))TransferMonitor.RenderCurrent(Path.Combine(Path.GetDirectoryName(visualPath),"transfer-running.png"));status.Text=move?"Moving...":"Copying...";await RunSta(()=>ShellTransfers.Execute(state,owner));state.End(false,null);}
    catch(OperationCanceledException){state.End(true,null);}
    catch(Exception ex){state.End(false,ex.Message);Program.Log("Transfer failed: "+ex);}
    finally{Program.Busy=false;Program.NotifyTransferFinished();}
