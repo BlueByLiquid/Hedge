@@ -1,7 +1,7 @@
 Unicode true
 !include "MUI2.nsh"
-Name "Hedge 0.4.13"
-OutFile "../Hedge-Setup-0.4.13.exe"
+Name "Hedge 0.5.0"
+OutFile "../Hedge-Setup-0.5.0.exe"
 InstallDir "$LOCALAPPDATA\Programs\Hedge"
 RequestExecutionLevel user
 SetCompressor /SOLID lzma
@@ -37,6 +37,7 @@ Section "Install"
  InitPluginsDir
  SetOutPath "$PLUGINSDIR"
  File "Hedge.cs"
+ File "Transfers.cs"
  File "Hedge.ico"
  StrCpy $4 "$WINDIR\Microsoft.NET\Framework64\v4.0.30319"
  StrCpy $0 "$4\csc.exe"
@@ -47,7 +48,7 @@ Section "Install"
  MessageBox MB_OK|MB_ICONSTOP "The Windows .NET Framework compiler was not found. No files were installed."
  Abort
  compiler_found:
- nsExec::ExecToStack /TIMEOUT=120000 '"$0" /noconfig /nologo /langversion:5 /codepage:65001 /target:winexe /win32icon:"$PLUGINSDIR\Hedge.ico" /optimize+ /out:"$PLUGINSDIR\Hedge.exe" /reference:"$4\System.dll" /reference:"$4\System.Core.dll" /reference:"$4\System.Windows.Forms.dll" /reference:"$4\System.Drawing.dll" /reference:"$4\System.Xml.dll" "$PLUGINSDIR\Hedge.cs"'
+ nsExec::ExecToStack /TIMEOUT=120000 '"$0" /noconfig /nologo /langversion:5 /codepage:65001 /target:winexe /win32icon:"$PLUGINSDIR\Hedge.ico" /optimize+ /out:"$PLUGINSDIR\Hedge.exe" /reference:"$4\System.dll" /reference:"$4\System.Core.dll" /reference:"$4\System.Windows.Forms.dll" /reference:"$4\System.Drawing.dll" /reference:"$4\System.Xml.dll" "$PLUGINSDIR\Hedge.cs" "$PLUGINSDIR\Transfers.cs"'
  Pop $1
  Pop $2
  ${If} $1 != 0
@@ -74,6 +75,7 @@ Section "Install"
  CreateDirectory "$INSTDIR\Source"
  SetOutPath "$INSTDIR\Source"
  File "Hedge.cs"
+ File "Transfers.cs"
  File "Installer.nsi"
  File "Hedge.ico"
  SetOutPath "$INSTDIR"
@@ -83,7 +85,7 @@ Section "Install"
  CreateShortcut "$SMPROGRAMS\Hedge\Uninstall Hedge.lnk" "$INSTDIR\Uninstall.exe"
  CreateShortcut "$DESKTOP\Hedge.lnk" "$INSTDIR\Hedge.exe"
  WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\Hedge" "DisplayName" "Hedge"
- WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\Hedge" "DisplayVersion" "0.4.13"
+ WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\Hedge" "DisplayVersion" "0.5.0"
  WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\Hedge" "UninstallString" '"$INSTDIR\Uninstall.exe"'
  WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\Hedge" "DisplayIcon" "$INSTDIR\Hedge.exe"
  WriteRegDWORD HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\Hedge" "NoModify" 1
@@ -105,6 +107,7 @@ Section "Uninstall"
  Delete "$SMPROGRAMS\Hedge\Uninstall Hedge.lnk"
  RMDir "$SMPROGRAMS\Hedge"
  Delete "$INSTDIR\Source\Hedge.cs"
+ Delete "$INSTDIR\Source\Transfers.cs"
  Delete "$INSTDIR\Source\Installer.nsi"
  Delete "$INSTDIR\Source\Hedge.ico"
  RMDir "$INSTDIR\Source"

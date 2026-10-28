@@ -17,7 +17,7 @@ jobs:
       - name: Install and check launch
         shell: pwsh
         run: |
-          $setup = Join-Path (Split-Path $PWD) 'Hedge-Setup-0.4.13.exe'
+          $setup = Join-Path (Split-Path $PWD) 'Hedge-Setup-0.5.0.exe'
           $process = Start-Process $setup -ArgumentList '/S' -Wait -PassThru
           if ($process.ExitCode -ne 0) { $detail = Get-Content "$env:LOCALAPPDATA\Hedge\install.log" -Raw -ErrorAction SilentlyContinue; throw "Installer failed: $($process.ExitCode). $detail" }
           $exe = "$env:LOCALAPPDATA\Programs\Hedge\Hedge.exe"
@@ -50,15 +50,15 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: Hedge-visual-fixture
-          path: visual/hedge.png
+          path: visual/*.png
       - name: Stage installer artifact
         shell: pwsh
         run: |
           New-Item -ItemType Directory -Force dist | Out-Null
-          Copy-Item (Join-Path (Split-Path $PWD) "Hedge-Setup-0.4.13.exe") dist/
+          Copy-Item (Join-Path (Split-Path $PWD) "Hedge-Setup-0.5.0.exe") dist/
       - name: Upload installer
         uses: actions/upload-artifact@v4
         with:
-          name: Hedge-Setup-0.4.13
-          path: dist/Hedge-Setup-0.4.13.exe
+          name: Hedge-Setup-0.5.0
+          path: dist/Hedge-Setup-0.5.0.exe
 

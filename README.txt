@@ -1,7 +1,7 @@
-Hedge 0.4.13
+Hedge 0.5.0
 
 START
-Run Hedge-Setup-0.4.13.exe. The installer installs for your Windows user,
+Run Hedge-Setup-0.5.0.exe. The installer installs for your Windows user,
 creates Start menu and desktop shortcuts, and offers to start Hedge.
 Windows 11 normally includes the required .NET Framework and its compiler.
 The installer builds Hedge using your Windows framework during setup.
@@ -78,3 +78,6 @@ narrow, subdued strip at the screen edge.
 
 APPEARANCE
 Choose green or gray folder and shortcut icons in Settings.
+
+TRANSFER MONITOR
+Copy and move open a Hedge transfer window with Windows-estimated progress, current item, destination, elapsed time, completion counts and cancellation. Completed details remain until closed; reopen the window from the tray menu > Transfers. Windows still displays file conflict and permission prompts. Cancellation can leave already completed or partial work. Local completion does not mean cloud sync has finished.
