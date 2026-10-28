@@ -1,7 +1,7 @@
-Hedge 0.6.0
+Hedge 0.6.1
 
 START
-Run Hedge-Setup-0.6.0.exe. The installer installs for your Windows user,
+Run Hedge-Setup-0.6.1.exe. The installer installs for your Windows user,
 creates Start menu and desktop shortcuts, and offers to start Hedge.
 Windows 11 normally includes the required .NET Framework and its compiler.
 The installer builds Hedge using your Windows framework during setup.
@@ -82,3 +82,11 @@ Choose green or gray folder and shortcut icons in Settings.
 
 GROUP JOB STRIPS
 Each file group has a Transfers strip at the bottom. Click it to expand or collapse job details. Transfers involving that group appear in its list, including both ends of a drag between groups. Additional jobs queue and run one at a time. Queued jobs can be cancelled. Moves ask for confirmation inside the expanded job panel. Windows still handles replace, permission and provider questions; the panel marks detected Windows dialogs as needing attention and offers Show question. Recent job results remain available for this session.
+
+DRAG AND DROP
+Drop on a folder row, empty file-list area (the open folder), or a sidebar folder/drive.
+Sidebar destinations include Home, Desktop, Downloads, Documents, OneDrive and pinned folders.
+An available sidebar destination highlights while dragging. Empty sidebar space is not a target.
+Default is Copy, even on the same drive. Shift requests Move and requires confirmation in the job panel.
+Ctrl requests Copy. Unsupported source effects are rejected. Windows asks about existing names;
+use Show question in the job panel to bring the native Replace/Skip question forward.
