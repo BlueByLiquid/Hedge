@@ -1,7 +1,7 @@
-Hedge 0.6.1
+Hedge 0.6.2
 
 START
-Run Hedge-Setup-0.6.1.exe. The installer installs for your Windows user,
+Run Hedge-Setup-0.6.2.exe. The installer installs for your Windows user,
 creates Start menu and desktop shortcuts, and offers to start Hedge.
 Windows 11 normally includes the required .NET Framework and its compiler.
 The installer builds Hedge using your Windows framework during setup.
@@ -90,3 +90,10 @@ An available sidebar destination highlights while dragging. Empty sidebar space 
 Default is Copy, even on the same drive. Shift requests Move and requires confirmation in the job panel.
 Ctrl requests Copy. Unsupported source effects are rejected. Windows asks about existing names;
 use Show question in the job panel to bring the native Replace/Skip question forward.
+
+LIVE FOLDER UPDATES
+Folder contents and the current search update from Windows filesystem notifications, without periodic polling.
+Changes are combined in a bounded 400 ms window. Subfolder notifications follow the Sub setting.
+Watcher errors trigger one rescan and monitoring restart. If monitoring cannot start, the status bar
+shows a warning; F5, navigating or reopening the tab retries. Some network/cloud providers may not
+supply reliable filesystem notifications; F5 remains available.

@@ -17,7 +17,7 @@ jobs:
       - name: Install and check launch
         shell: pwsh
         run: |
-          $setup = Join-Path (Split-Path $PWD) 'Hedge-Setup-0.6.1.exe'
+          $setup = Join-Path (Split-Path $PWD) 'Hedge-Setup-0.6.2.exe'
           $process = Start-Process $setup -ArgumentList '/S' -Wait -PassThru
           if ($process.ExitCode -ne 0) { $detail = Get-Content "$env:LOCALAPPDATA\Hedge\install.log" -Raw -ErrorAction SilentlyContinue; throw "Installer failed: $($process.ExitCode). $detail" }
           $exe = "$env:LOCALAPPDATA\Programs\Hedge\Hedge.exe"
@@ -44,6 +44,14 @@ jobs:
           if (!$test.WaitForExit(45000)) { Stop-Process -Id $test.Id -Force; throw 'Job tests timed out' }
           $log = Get-Content "$env:LOCALAPPDATA\Hedge\startup.log" -Raw
           if ($log -notmatch 'JOB_TEST_OK' -or $log -match 'JOB_TEST_ERROR') { throw "Job tests failed: $log" }
+      - name: Verify event-driven folder and search updates
+        shell: pwsh
+        run: |
+          $exe = "$env:LOCALAPPDATA\Programs\Hedge\Hedge.exe"
+          $test = Start-Process $exe -ArgumentList '--watch-test' -PassThru
+          if (!$test.WaitForExit(90000)) { Stop-Process -Id $test.Id -Force; throw 'Watcher tests timed out' }
+          $log = Get-Content "$env:LOCALAPPDATA\Hedge\startup.log" -Raw
+          if ($log -notmatch 'WATCH_TEST_OK' -or $log -match 'WATCH_TEST_ERROR') { throw "Watcher tests failed: $log" }
       - name: Render isolated Hedge fixture
         shell: pwsh
         run: |
@@ -63,10 +71,10 @@ jobs:
         shell: pwsh
         run: |
           New-Item -ItemType Directory -Force dist | Out-Null
-          Copy-Item (Join-Path (Split-Path $PWD) "Hedge-Setup-0.6.1.exe") dist/
+          Copy-Item (Join-Path (Split-Path $PWD) "Hedge-Setup-0.6.2.exe") dist/
       - name: Upload installer
         uses: actions/upload-artifact@v4
         with:
-          name: Hedge-Setup-0.6.1
-          path: dist/Hedge-Setup-0.6.1.exe
+          name: Hedge-Setup-0.6.2
+          path: dist/Hedge-Setup-0.6.2.exe
 
