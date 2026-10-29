@@ -18,7 +18,8 @@ jobs:
         shell: pwsh
         run: |
           $setup = Join-Path (Split-Path $PWD) 'Hedge-Setup-0.6.2.exe'
-          $process = Start-Process $setup -ArgumentList '/S' -Wait -PassThru
+          $process = Start-Process $setup -ArgumentList '/S' -PassThru
+          if (!$process.WaitForExit(150000)) { Stop-Process -Id $process.Id -Force; $detail = Get-Content "$env:LOCALAPPDATA\Hedge\install.log" -Raw -ErrorAction SilentlyContinue; throw "Installer timed out. $detail" }
           if ($process.ExitCode -ne 0) { $detail = Get-Content "$env:LOCALAPPDATA\Hedge\install.log" -Raw -ErrorAction SilentlyContinue; throw "Installer failed: $($process.ExitCode). $detail" }
           $exe = "$env:LOCALAPPDATA\Programs\Hedge\Hedge.exe"
           if (!(Test-Path $exe)) { throw 'Installer did not create Hedge.exe' }

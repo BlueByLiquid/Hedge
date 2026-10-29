@@ -309,7 +309,7 @@ namespace Hedge {
    filter.Text="watch-match";await Task.Delay(200);File.WriteAllText(file,"one");await WaitForWatch(()=>visible.Any(x=>x.Path==file),"Created file absent from active search");
    File.AppendAllText(file,"two");await WaitForWatch(()=>visible.Any(x=>x.Path==file&&x.Size==6),"Changed file metadata stale");
    Task writing=Task.Run(()=>{for(int i=0;i<30;i++){File.AppendAllText(file,"x");Thread.Sleep(80);}});
-   try{await WaitForWatch(()=>!writing.IsCompleted&&visible.Any(x=>x.Path==file&&x.Size>6),"Steady events postponed all refreshes");}finally{await writing;}
+   bool live=false;while(!writing.IsCompleted){if(visible.Any(x=>x.Path==file&&x.Size>6)){live=true;break;}await Task.Delay(50);}await writing;if(!live)throw new Exception("Steady events postponed all refreshes");
    filter.Text="watch-";File.Move(file,renamed);await WaitForWatch(()=>visible.Any(x=>x.Path==renamed)&&!visible.Any(x=>x.Path==file),"Rename not reflected");
    File.Delete(renamed);await WaitForWatch(()=>!scanning&&searchCancel==null&&!entries.Any(x=>x.Path==renamed),"Delete not reflected");
    // Notifications must keep flowing through refreshes and while a drawer is hidden.
