@@ -1,7 +1,7 @@
-Hedge 0.6.2
+Hedge 0.6.3
 
 START
-Run Hedge-Setup-0.6.2.exe. The installer installs for your Windows user,
+Run Hedge-Setup-0.6.3.exe. The installer installs for your Windows user,
 creates Start menu and desktop shortcuts, and offers to start Hedge.
 Windows 11 normally includes the required .NET Framework and its compiler.
 The installer builds Hedge using your Windows framework during setup.
@@ -97,3 +97,8 @@ Changes are combined in a bounded 400 ms window. Subfolder notifications follow 
 Watcher errors trigger one rescan and monitoring restart. If monitoring cannot start, the status bar
 shows a warning; F5, navigating or reopening the tab retries. Some network/cloud providers may not
 supply reliable filesystem notifications; F5 remains available.
+
+OPENING FILES
+Opening a file or app (double-click, Enter or Open) collapses its drawer after a successful shell launch
+when unpinned. Open in File Explorer follows the same rule. Pinned drawers remain open; opening a
+folder inside Hedge keeps the drawer open. A failed shell launch leaves the drawer visible.
