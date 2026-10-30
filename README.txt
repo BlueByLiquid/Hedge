@@ -1,7 +1,7 @@
-Hedge 0.6.3
+Hedge 0.6.4
 
 START
-Run Hedge-Setup-0.6.3.exe. The installer installs for your Windows user,
+Run Hedge-Setup-0.6.4.exe. The installer installs for your Windows user,
 creates Start menu and desktop shortcuts, and offers to start Hedge.
 Windows 11 normally includes the required .NET Framework and its compiler.
 The installer builds Hedge using your Windows framework during setup.
@@ -102,3 +102,9 @@ OPENING FILES
 Opening a file or app (double-click, Enter or Open) collapses its drawer after a successful shell launch
 when unpinned. Open in File Explorer follows the same rule. Pinned drawers remain open; opening a
 folder inside Hedge keeps the drawer open. A failed shell launch leaves the drawer visible.
+
+HIDE FILES OR FOLDERS
+Use Hide folders and Hide files beside Find. Each toggle applies to the current tab and combines
+with the current text/regex search. Both enabled hides all rows; toggle either off to show them again.
+Hide folders only hides folder rows: Sub still searches files inside those folders. These controls
+filter the existing listing and do not cause a new disk scan. They move below Find in narrow panes.
