@@ -1,7 +1,7 @@
-Hedge 0.6.4
+Hedge 0.6.5
 
 START
-Run Hedge-Setup-0.6.4.exe. The installer installs for your Windows user,
+Run Hedge-Setup-0.6.5.exe. The installer installs for your Windows user,
 creates Start menu and desktop shortcuts, and offers to start Hedge.
 Windows 11 normally includes the required .NET Framework and its compiler.
 The installer builds Hedge using your Windows framework during setup.
@@ -108,3 +108,9 @@ Use Hide folders and Hide files beside Find. Each toggle applies to the current 
 with the current text/regex search. Both enabled hides all rows; toggle either off to show them again.
 Hide folders only hides folder rows: Sub still searches files inside those folders. These controls
 filter the existing listing and do not cause a new disk scan. They move below Find in narrow panes.
+
+EDGE RECOVERY
+The existing edge timer also checks the configured hotspot position directly, so hovering can
+recover the drawer even if another window covers its handle. Reveal always restores the native
+topmost position, including when the drawer already considers itself open. The passive collapsed
+handle restores its topmost position without activating or taking keyboard focus.

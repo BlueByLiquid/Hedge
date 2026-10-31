@@ -43,7 +43,7 @@ namespace Hedge {
   [DllImport("user32.dll",CharSet=CharSet.Unicode,EntryPoint="MessageBoxW")]static extern int NativeMessage(IntPtr parent,string text,string caption,uint type);
   static int NativeMessage(string text,string caption,uint type){return NativeMessage(IntPtr.Zero,text,caption,type);}
   [STAThread] static void Main(){
-   Log("Starting Hedge 0.6.4");
+   Log("Starting Hedge 0.6.5");
    try{
     Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException);
     Application.ThreadException+=(sender,args)=>Report(args.Exception);
@@ -52,7 +52,7 @@ namespace Hedge {
      if(!created){Log("Another instance is running.");MessageBox.Show("Hedge is already running. Use the blue screen-edge strip or the Hedge icon in the system tray to open a drawer.","Hedge",MessageBoxButtons.OK,MessageBoxIcon.Information);return;}
      DarkWindows.Enable();Application.EnableVisualStyles();Application.SetCompatibleTextRenderingDefault(false);Config=Settings.Load();
      if(Config.Favorites==null)Config.Favorites=new List<string>();if(Config.LeftA==null)Config.LeftA=new List<string>();if(Config.LeftB==null)Config.LeftB=new List<string>();if(Config.RightA==null)Config.RightA=new List<string>();if(Config.RightB==null)Config.RightB=new List<string>();
-     Log("Settings loaded; creating drawers.");var host=new Host();Log("Drawers created; showing the left drawer.");host.ShowInitial();if(Environment.GetCommandLineArgs().Contains("--launch-test")){var launchTimer=new Timer{Interval=400};launchTimer.Tick+=async (ss,ee)=>{launchTimer.Stop();try{await host.LaunchTests();Log("LAUNCH_TEST_OK");}catch(Exception e){Log("LAUNCH_TEST_ERROR: "+e);}finally{launchTimer.Dispose();host.ExitThread();}};launchTimer.Start();}if(Environment.GetCommandLineArgs().Contains("--watch-test")){var watchTimer=new Timer{Interval=400};watchTimer.Tick+=async (ss,ee)=>{watchTimer.Stop();try{await host.WatchTests();Log("WATCH_TEST_OK");}catch(Exception e){Log("WATCH_TEST_ERROR: "+e);}finally{watchTimer.Dispose();host.ExitThread();}};watchTimer.Start();}if(Environment.GetCommandLineArgs().Contains("--jobs-test")){var jobTimer=new Timer{Interval=400};jobTimer.Tick+=async (ss,ee)=>{jobTimer.Stop();try{await host.JobTests();Log("JOB_TEST_OK");}catch(Exception e){Log("JOB_TEST_ERROR: "+e);}finally{jobTimer.Dispose();host.ExitThread();}};jobTimer.Start();}if(Environment.GetCommandLineArgs().Contains("--visual-test")){host.SetupVisualFixture();var visualTimer=new Timer{Interval=8000};visualTimer.Tick+=(ss,ee)=>{visualTimer.Stop();try{host.StartFixtureDrop();var dropTimer=new Timer{Interval=5000};dropTimer.Tick+=(sss,eee)=>{dropTimer.Stop();try{host.VerifyFixtureDrop();host.CaptureVisualFixture();Log("VISUAL_TEST_OK");}catch(Exception e){Log("VISUAL_TEST_ERROR: "+e);}finally{dropTimer.Dispose();visualTimer.Dispose();host.ExitThread();}};dropTimer.Start();}catch(Exception e){Log("VISUAL_TEST_ERROR: "+e);visualTimer.Dispose();host.ExitThread();}};visualTimer.Start();}if(Environment.GetCommandLineArgs().Contains("--smoke-test")){var testTimer=new Timer{Interval=800};testTimer.Tick+=(ss,ee)=>{testTimer.Stop();try{host.SmokeTest();Log("UI_SMOKE_OK");}catch(Exception e){Log("UI_SMOKE_ERROR: "+e);}finally{testTimer.Dispose();host.ExitThread();}};testTimer.Start();}Application.Run(host);Log("Exit completed.");
+     Log("Settings loaded; creating drawers.");var host=new Host();Log("Drawers created; showing the left drawer.");host.ShowInitial();if(Environment.GetCommandLineArgs().Contains("--edge-test")){var edgeTimer=new Timer{Interval=400};edgeTimer.Tick+=async (ss,ee)=>{edgeTimer.Stop();try{await host.EdgeTests();Log("EDGE_TEST_OK");}catch(Exception e){Log("EDGE_TEST_ERROR: "+e);}finally{edgeTimer.Dispose();host.ExitThread();}};edgeTimer.Start();}if(Environment.GetCommandLineArgs().Contains("--launch-test")){var launchTimer=new Timer{Interval=400};launchTimer.Tick+=async (ss,ee)=>{launchTimer.Stop();try{await host.LaunchTests();Log("LAUNCH_TEST_OK");}catch(Exception e){Log("LAUNCH_TEST_ERROR: "+e);}finally{launchTimer.Dispose();host.ExitThread();}};launchTimer.Start();}if(Environment.GetCommandLineArgs().Contains("--watch-test")){var watchTimer=new Timer{Interval=400};watchTimer.Tick+=async (ss,ee)=>{watchTimer.Stop();try{await host.WatchTests();Log("WATCH_TEST_OK");}catch(Exception e){Log("WATCH_TEST_ERROR: "+e);}finally{watchTimer.Dispose();host.ExitThread();}};watchTimer.Start();}if(Environment.GetCommandLineArgs().Contains("--jobs-test")){var jobTimer=new Timer{Interval=400};jobTimer.Tick+=async (ss,ee)=>{jobTimer.Stop();try{await host.JobTests();Log("JOB_TEST_OK");}catch(Exception e){Log("JOB_TEST_ERROR: "+e);}finally{jobTimer.Dispose();host.ExitThread();}};jobTimer.Start();}if(Environment.GetCommandLineArgs().Contains("--visual-test")){host.SetupVisualFixture();var visualTimer=new Timer{Interval=8000};visualTimer.Tick+=(ss,ee)=>{visualTimer.Stop();try{host.StartFixtureDrop();var dropTimer=new Timer{Interval=5000};dropTimer.Tick+=(sss,eee)=>{dropTimer.Stop();try{host.VerifyFixtureDrop();host.CaptureVisualFixture();Log("VISUAL_TEST_OK");}catch(Exception e){Log("VISUAL_TEST_ERROR: "+e);}finally{dropTimer.Dispose();visualTimer.Dispose();host.ExitThread();}};dropTimer.Start();}catch(Exception e){Log("VISUAL_TEST_ERROR: "+e);visualTimer.Dispose();host.ExitThread();}};visualTimer.Start();}if(Environment.GetCommandLineArgs().Contains("--smoke-test")){var testTimer=new Timer{Interval=800};testTimer.Tick+=(ss,ee)=>{testTimer.Stop();try{host.SmokeTest();Log("UI_SMOKE_OK");}catch(Exception e){Log("UI_SMOKE_ERROR: "+e);}finally{testTimer.Dispose();host.ExitThread();}};testTimer.Start();}Application.Run(host);Log("Exit completed.");
     }
    }catch(Exception error){Report(error);}
   }
@@ -140,6 +140,7 @@ namespace Hedge {
     try{ShellTransfers.Execute(new TransferState(new string[]{Path.Combine(from,"missing.txt")},to,false),IntPtr.Zero);throw new Exception("Missing source accepted");}catch(Exception ex){if(!(ex is COMException)&&!(ex is FileNotFoundException)&&!(ex is DirectoryNotFoundException))throw;}
    }finally{try{Directory.Delete(root,true);}catch{}}
   }
+  public async Task EdgeTests(){await left.EdgeTests();await right.EdgeTests();}
   public async Task LaunchTests(){string root=Path.Combine(Path.GetTempPath(),"HedgeLaunchTest-"+Guid.NewGuid().ToString("N"));Directory.CreateDirectory(root);try{await left.LaunchTests(root);}finally{try{Directory.Delete(root,true);}catch{}}}
   public async Task WatchTests(){
    string root=Path.Combine(Path.GetTempPath(),"HedgeWatchTest-"+Guid.NewGuid().ToString("N"));Directory.CreateDirectory(root);
@@ -171,7 +172,7 @@ namespace Hedge {
   protected override void ExitThreadCore(){if(exiting)return;if(Program.Busy||Program.Dragging){MessageBox.Show("Wait for the current file operation to finish before exiting.","Hedge");return;}exiting=true;Save();tray.Visible=false;tray.Dispose();left.Shutdown();right.Shutdown();base.ExitThreadCore();}
  }
  class Drawer:Form {
-  bool left,expanded,closing,pinned;int drawerWidth;DateTime hover=DateTime.MinValue,away=DateTime.MinValue;
+  bool left,expanded,closing,pinned,edgeTriggered;int drawerWidth;DateTime hover=DateTime.MinValue,away=DateTime.MinValue;
   SplitContainer split;TabPane a,b;Form strip;Timer timer;Button pin,splitButton,orientationButton;public Drawer(bool isLeft){left=isLeft;drawerWidth=(isLeft?Program.Config.LeftWidth:Program.Config.RightWidth);if(drawerWidth<320)drawerWidth=Program.Config.Width;Text="Hedge • "+(left?"Left":"Right");FormBorderStyle=FormBorderStyle.None;ShowInTaskbar=false;TopMost=true;BackColor=Color.FromArgb(228,232,238);Padding=new Padding(2);Font=new Font("Segoe UI",10);
    var header=new FlowLayoutPanel{Dock=DockStyle.Top,Height=46,Padding=new Padding(10,7,0,0),WrapContents=false};pin=Program.Icon("Pin",()=>{Pinned=!Pinned;},"Pin drawer open");header.Controls.Add(pin);splitButton=Program.Icon("Columns2",()=>{split.Panel2Collapsed=!split.Panel2Collapsed;UpdateToolbar();},"One or two views");orientationButton=Program.Icon("Rows2",()=>{split.Orientation=split.Orientation==Orientation.Horizontal?Orientation.Vertical:Orientation.Horizontal;UpdateToolbar();},"Stack views or place side by side");header.Controls.Add(splitButton);header.Controls.Add(orientationButton);header.Controls.Add(Program.Icon(left?"PanelLeftClose":"PanelRightClose",()=>Collapse(),"Collapse drawer"));
    split=new SplitContainer{Dock=DockStyle.Fill,Orientation=Orientation.Horizontal,Size=new Size(700,650),SplitterWidth=6,Panel1MinSize=150,Panel2MinSize=150,SplitterDistance=320};a=new TabPane(left?Program.Config.LeftA:Program.Config.RightA);b=new TabPane(left?Program.Config.LeftB:Program.Config.RightB);split.Panel1.Controls.Add(a);split.Panel2.Controls.Add(b);split.Panel2Collapsed=!(left?Program.Config.LeftSplit:Program.Config.RightSplit);Controls.Add(split);Controls.Add(header);var edge=new Panel{Dock=left?DockStyle.Right:DockStyle.Left,Width=7,Cursor=Cursors.SizeWE,BackColor=Color.FromArgb(43,47,56)};Controls.Add(edge);edge.BringToFront();bool resizing=false;edge.MouseDown+=(ss,ee)=>{if(ee.Button==MouseButtons.Left){resizing=true;edge.Capture=true;}};edge.MouseMove+=(ss,ee)=>{if(!resizing)return;var r=Screen.FromControl(this).WorkingArea;int desired=left?Cursor.Position.X-r.Left:r.Right-Cursor.Position.X;drawerWidth=Math.Max(360,Math.Min(r.Width,desired));Position();};edge.MouseUp+=(ss,ee)=>{if(resizing){resizing=false;edge.Capture=false;if(left)Program.Config.LeftWidth=drawerWidth;else Program.Config.RightWidth=drawerWidth;}};Program.Theme(this);UpdateToolbar();
@@ -197,20 +198,51 @@ namespace Hedge {
   public Task SmokeSidebarDrop(string source,string destination){return a.SmokeSidebarDrop(source,destination);}
   public void SmokeTest(){a.SmokeTest();int old=drawerWidth;SetWidth(old+40);Position();if(drawerWidth!=old+40)throw new Exception("Width did not change");SetWidth(old);Position();}
   public void SetWidth(int width){drawerWidth=width;if(left)Program.Config.LeftWidth=width;else Program.Config.RightWidth=width;}
-  void TickEdge(){if(!expanded){if(hover!=DateTime.MinValue&&(DateTime.UtcNow-hover).TotalMilliseconds>=Program.Config.Delay)Reveal();return;}if(pinned||Program.Dragging||Program.Busy||ContainsFocus||Bounds.Contains(Cursor.Position)){away=DateTime.MinValue;return;}if(away==DateTime.MinValue)away=DateTime.UtcNow;if((DateTime.UtcNow-away).TotalMilliseconds>700)Collapse();}
-  public void Reveal(){if(expanded)return;expanded=true;away=DateTime.MinValue;Position();Show();BringToFront();strip.Hide();}
-  public void Collapse(){expanded=false;Hide();hover=DateTime.MinValue;strip.Show();Position();}
+  void TickEdge(){
+   // Position-based recovery still works when another window owns the mouse hit at this edge.
+   if(((EdgeStrip)strip).EdgeBounds.Contains(Cursor.Position)){
+    if(hover==DateTime.MinValue){hover=DateTime.UtcNow;if(!expanded)EdgeStrip.RaiseTopmost(strip);}
+    if(!edgeTriggered&&(DateTime.UtcNow-hover).TotalMilliseconds>=Program.Config.Delay){edgeTriggered=true;Reveal();}
+   }else{hover=DateTime.MinValue;edgeTriggered=false;}
+   if(!expanded)return;
+   if(pinned||Program.Dragging||Program.Busy||ContainsFocus||Bounds.Contains(Cursor.Position)){away=DateTime.MinValue;return;}if(away==DateTime.MinValue)away=DateTime.UtcNow;if((DateTime.UtcNow-away).TotalMilliseconds>700)Collapse();
+  }
+  public void Reveal(){expanded=true;away=DateTime.MinValue;Position();if(WindowState==FormWindowState.Minimized)WindowState=FormWindowState.Normal;Show();strip.Hide();EdgeStrip.RaiseTopmost(this);BringToFront();}
+  public void Collapse(){expanded=false;Hide();hover=DateTime.MinValue;edgeTriggered=false;strip.Show();Position();EdgeStrip.RaiseTopmost(strip);}
+  public async Task EdgeTests(){
+   var saved=Cursor.Position;bool oldPinned=pinned;int delay=Program.Config.Delay;Pinned=false;Program.Config.Delay=120;timer.Stop();
+   try{Collapse();Position();var bounds=((EdgeStrip)strip).EdgeBounds;var point=new Point(bounds.Left+Math.Max(1,bounds.Width/2),bounds.Top+bounds.Height/2);
+    using(var cover=new Form{Text="Hedge edge test window",FormBorderStyle=FormBorderStyle.Sizable,StartPosition=FormStartPosition.Manual,Bounds=Screen.FromControl(this).WorkingArea,ShowInTaskbar=false}){
+     cover.Show();EdgeStrip.Demote(strip);cover.BringToFront();if(EdgeStrip.OwnsPoint(strip,point))throw new Exception("Test did not cover the edge handle");
+     Cursor.Position=point;hover=DateTime.MinValue;TickEdge();await Task.Delay(180);TickEdge();if(!Visible||!EdgeStrip.OwnsPoint(this,point))throw new Exception("Covered edge did not reveal drawer");
+     // Reveal must also repair an expanded drawer's native z-order.
+     EdgeStrip.Demote(this);cover.TopMost=true;cover.BringToFront();Reveal();if(!Visible||!EdgeStrip.OwnsPoint(this,point))throw new Exception("Expanded drawer could not be raised again");
+     Collapse();if(!EdgeStrip.OwnsPoint(strip,point))throw new Exception("Collapsed handle not restored above other window");
+     // Restoring the passive handle must not activate Hedge or steal keyboard focus.
+     cover.Activate();IntPtr foreground=EdgeStrip.Foreground();EdgeStrip.RaiseTopmost(strip);if(EdgeStrip.Foreground()!=foreground)throw new Exception("Edge restoration stole focus");
+    }
+    Program.Log("EDGE_TEST_DETAILS: covered handle recovery, repeated reveal, topmost collision and passive handle focus passed for "+(left?"left":"right"));
+   }finally{Cursor.Position=saved;Program.Config.Delay=delay;Pinned=oldPinned;Collapse();timer.Start();}
+  }
   public void RefreshAll(){a.RefreshActive();b.RefreshActive();}
   public void Store(){if(left){Program.Config.LeftA=a.Paths();Program.Config.LeftB=b.Paths();Program.Config.LeftSplit=!split.Panel2Collapsed;}else{Program.Config.RightA=a.Paths();Program.Config.RightB=b.Paths();Program.Config.RightSplit=!split.Panel2Collapsed;}}
   public void Shutdown(){closing=true;Microsoft.Win32.SystemEvents.DisplaySettingsChanged-=DisplayChanged;timer.Stop();timer.Dispose();strip.Close();strip.Dispose();Close();Dispose();}
  }
  class EdgeStrip:Form {
-  Rectangle edgeBounds;
+  Rectangle edgeBounds;public Rectangle EdgeBounds {get{return edgeBounds;}}
   [StructLayout(LayoutKind.Sequential)]struct WinRect{public int left,top,right,bottom;}
   [DllImport("user32.dll")]static extern bool GetWindowRect(IntPtr hwnd,out WinRect rect);
   public void VerifyEdge(){if(Environment.OSVersion.Platform!=PlatformID.Win32NT)return;WinRect r;if(!GetWindowRect(Handle,out r)||r.right-r.left>6)throw new Exception("Collapsed edge strip is wider than expected: "+(r.right-r.left));}
   [DllImport("user32.dll",SetLastError=true)]static extern bool SetWindowPos(IntPtr hwnd,IntPtr after,int x,int y,int w,int h,uint flags);
-  public void SetEdgeBounds(Rectangle bounds){edgeBounds=bounds;if(Environment.OSVersion.Platform==PlatformID.Win32NT&&IsHandleCreated){SetWindowPos(Handle,IntPtr.Zero,bounds.X,bounds.Y,bounds.Width,bounds.Height,0x0014);}else Bounds=bounds;}
+  public void SetEdgeBounds(Rectangle bounds){edgeBounds=bounds;if(Environment.OSVersion.Platform==PlatformID.Win32NT&&IsHandleCreated){SetWindowPos(Handle,new IntPtr(-1),bounds.X,bounds.Y,bounds.Width,bounds.Height,0x0010);}else Bounds=bounds;}
+  public static void RaiseTopmost(Control window){if(window.IsDisposed||!window.IsHandleCreated)return;SetWindowPos(window.Handle,new IntPtr(-1),0,0,0,0,0x0013);}
+  public static void Demote(Control window){SetWindowPos(window.Handle,new IntPtr(-2),0,0,0,0,0x0013);}
+  [DllImport("user32.dll")]static extern IntPtr WindowFromPoint(Point point);
+  [DllImport("user32.dll")]static extern IntPtr GetAncestor(IntPtr window,uint flags);
+  [DllImport("user32.dll")]static extern IntPtr GetForegroundWindow();
+  public static IntPtr Foreground(){return GetForegroundWindow();}
+  public static bool OwnsPoint(Control window,Point point){return GetAncestor(WindowFromPoint(point),2)==window.Handle;}
+  protected override bool ShowWithoutActivation {get{return true;}}
   protected override void OnShown(EventArgs e){base.OnShown(e);SetEdgeBounds(edgeBounds);}
  }
  class TabStrip:Control {
