@@ -1,7 +1,7 @@
-Hedge 0.4.2
+Hedge 0.6.5
 
 START
-Run Hedge-Setup-0.4.2.exe. The installer installs for your Windows user,
+Run Hedge-Setup-0.6.5.exe. The installer installs for your Windows user,
 creates Start menu and desktop shortcuts, and offers to start Hedge.
 Windows 11 normally includes the required .NET Framework and its compiler.
 The installer builds Hedge using your Windows framework during setup.
@@ -75,3 +75,42 @@ TAB OVERFLOW
 When tabs exceed the available space, use the small arrows at either end of
 the tab strip. Click the x on a tab to close it. The collapsed hotspot is a
 narrow, subdued strip at the screen edge.
+
+APPEARANCE
+Choose green or gray folder and shortcut icons in Settings.
+
+
+GROUP JOB STRIPS
+Each file group has a Transfers strip at the bottom. Click it to expand or collapse job details. Transfers involving that group appear in its list, including both ends of a drag between groups. Additional jobs queue and run one at a time. Queued jobs can be cancelled. Moves ask for confirmation inside the expanded job panel. Windows still handles replace, permission and provider questions; the panel marks detected Windows dialogs as needing attention and offers Show question. Recent job results remain available for this session.
+
+DRAG AND DROP
+Drop on a folder row, empty file-list area (the open folder), or a sidebar folder/drive.
+Sidebar destinations include Home, Desktop, Downloads, Documents, OneDrive and pinned folders.
+An available sidebar destination highlights while dragging. Empty sidebar space is not a target.
+Default is Copy, even on the same drive. Shift requests Move and requires confirmation in the job panel.
+Ctrl requests Copy. Unsupported source effects are rejected. Windows asks about existing names;
+use Show question in the job panel to bring the native Replace/Skip question forward.
+
+LIVE FOLDER UPDATES
+Folder contents and the current search update from Windows filesystem notifications, without periodic polling.
+Changes are combined in a bounded 400 ms window. Subfolder notifications follow the Sub setting.
+Watcher errors trigger one rescan and monitoring restart. If monitoring cannot start, the status bar
+shows a warning; F5, navigating or reopening the tab retries. Some network/cloud providers may not
+supply reliable filesystem notifications; F5 remains available.
+
+OPENING FILES
+Opening a file or app (double-click, Enter or Open) collapses its drawer after a successful shell launch
+when unpinned. Open in File Explorer follows the same rule. Pinned drawers remain open; opening a
+folder inside Hedge keeps the drawer open. A failed shell launch leaves the drawer visible.
+
+HIDE FILES OR FOLDERS
+Use Hide folders and Hide files beside Find. Each toggle applies to the current tab and combines
+with the current text/regex search. Both enabled hides all rows; toggle either off to show them again.
+Hide folders only hides folder rows: Sub still searches files inside those folders. These controls
+filter the existing listing and do not cause a new disk scan. They move below Find in narrow panes.
+
+EDGE RECOVERY
+The existing edge timer also checks the configured hotspot position directly, so hovering can
+recover the drawer even if another window covers its handle. Reveal always restores the native
+topmost position, including when the drawer already considers itself open. The passive collapsed
+handle restores its topmost position without activating or taking keyboard focus.
